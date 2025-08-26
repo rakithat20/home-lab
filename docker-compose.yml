@@ -1,0 +1,47 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin
+    container_name: jellyfin
+    user: ${JELLYFIN_UID}:${JELLYFIN_GID}
+    network_mode: 'host'
+    volumes:
+      - /home/rakitha/apps/JellyFin/config:/config
+      - /home/rakitha/apps/JellyFin/cache:/cache
+      - type: bind
+        source: /home/rakitha/sambashare
+        target: /media
+      
+    restart: 'unless-stopped'
+    # Optional - alternative address used for autodiscovery
+    environment:
+      - ${JELLYFIN_PUBLISHED_URL}
+    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+
+    environment:
+      - PUID=${QBITTORENT_PUID}
+      - PGID=${QBITTORENT_PGID}
+      - TZ=${QBITTORENT_TZ}
+      - WEBUI_PORT=${QBITTORENT_WEBUI_PORT}
+      - TORRENTING_PORT=${QBITTORENT_TORRENTING_PORT}
+
+    volumes:
+      - /home/rakitha/apps/qbittorrent/config:/config
+      - /home/rakitha/apps/qbittorrent/downloads:/downloads
+    ports:
+      - "${QBITTORENT_WEBUI_PORT}:9090"
+      - "${QBITTORENT_TORRENTING_PORT}:6881"
+      - "${QBITTORENT_TORRENTING_PORT}:6881/udp"
+    restart: unless-stopped
+  uptimekuma:
+    image: louislam/uptime-kuma:latest
+    volumes: 
+      - /home/rakitha/apps/uptimekuma:/app/data
+    container_name: uptime-kuma
+    ports:
+      - "${UPTIMEKUMA_PORT}:3001"
+    restart: always
