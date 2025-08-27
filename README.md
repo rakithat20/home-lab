@@ -15,7 +15,8 @@ _It's a work in progress — continuously improving, tweaking, and adding new se
 
 ## **📂 Directory Structure**
 - **`apps/`** → persistent configuration for each service (`JellyFin`, `qbittorrent`, `uptimekuma`)  
-- **`docker-compose.yml`** → central file to manage all containers  
+- **`home-lab/docker-compose.yml`** → central file to manage all containers  
+- **`home-lab/README.md`** → documentation for the homelab  
 - **`sambashare/`** → shared storage for media files (`Movies`, `Music`, `TV_Shows`)  
 - **`Downloads/`** → temporary files and utilities  
 
