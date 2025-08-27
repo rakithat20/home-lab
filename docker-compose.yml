@@ -25,7 +25,7 @@ services:
     environment:
       - PUID=${QBITTORENT_PUID}
       - PGID=${QBITTORENT_PGID}
-      - TZ=${QBITTORENT_TZ}
+      - TZ=${TZ}
       - WEBUI_PORT=${QBITTORENT_WEBUI_PORT}
       - TORRENTING_PORT=${QBITTORENT_TORRENTING_PORT}
 
@@ -36,6 +36,52 @@ services:
       - "${QBITTORENT_WEBUI_PORT}:9090"
       - "${QBITTORENT_TORRENTING_PORT}:6881"
       - "${QBITTORENT_TORRENTING_PORT}:6881/udp"
+    restart: unless-stopped
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${SONARR_PUID}
+      - PGID=${SONARR_PGID}
+      - TZ=${TZ}
+    volumes:
+      - /home/rakitha/apps/sonarr/data:/config
+      - /home/rakitha/sambashare/Tv_Shows:/tv
+      - /home/rakitha/apps/qbittorrent/downloads:/downloads
+    ports:
+      - "${SONARR_PORT}:8989"
+    restart: unless-stopped
+    depends_on:
+      - prowlarr
+      - qbittorrent
+  radar:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment: 
+      - PUID=${RADARR_PUID}
+      - PGID=${RADARR_PGID}
+      - TZ=${TZ}
+    volumes:
+      - /home/rakitha/apps/radarr/data:/config
+      - /home/rakitha/sambashare/Movies:/movies
+      - /home/rakitha/apps/qbittorrent/downloads:/downloads
+    ports:
+      - "${RADARR_PORT}:7878"
+    restart: unless-stopped
+    depends_on:
+      - prowlarr
+      - qbittorrent
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${SONARR_PUID}
+      - PGID=${SONARR_PGID}
+      - TZ=${TZ}
+    volumes:
+      - /home/rakitha/apps/prowlarr/data:/config
+    ports:
+      - "${PROWLARR_PORT}:9696"
     restart: unless-stopped
   uptimekuma:
     image: louislam/uptime-kuma:latest
