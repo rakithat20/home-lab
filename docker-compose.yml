@@ -5,10 +5,10 @@ services:
     user: ${JELLYFIN_UID}:${JELLYFIN_GID}
     network_mode: 'host'
     volumes:
-      - /home/rakitha/apps/JellyFin/config:/config
-      - /home/rakitha/apps/JellyFin/cache:/cache
+      - ./data/jellyfin/config:/config
+      - ./data/jellyfin/cache:/cache
       - type: bind
-        source: /home/rakitha/sambashare
+        source: ./media
         target: /media
       
     restart: 'unless-stopped'
@@ -30,8 +30,8 @@ services:
       - TORRENTING_PORT=${QBITTORENT_TORRENTING_PORT}
 
     volumes:
-      - /home/rakitha/apps/qbittorrent/config:/config
-      - /home/rakitha/apps/qbittorrent/downloads:/downloads
+      - ./data/qbittorrent/config:/config
+      - ./data/qbittorrent/downloads:/downloads
     ports:
       - "${QBITTORENT_WEBUI_PORT}:9090"
       - "${QBITTORENT_TORRENTING_PORT}:6881"
@@ -45,9 +45,9 @@ services:
       - PGID=${SONARR_PGID}
       - TZ=${TZ}
     volumes:
-      - /home/rakitha/apps/sonarr/data:/config
-      - /home/rakitha/sambashare/Tv_Shows:/tv
-      - /home/rakitha/apps/qbittorrent/downloads:/downloads
+      - ./data/sonarr/config:/config
+      - ./media/tv:/tv
+      - ./data/qbittorrent/downloads:/downloads
     ports:
       - "${SONARR_PORT}:8989"
     restart: unless-stopped
@@ -62,9 +62,9 @@ services:
       - PGID=${RADARR_PGID}
       - TZ=${TZ}
     volumes:
-      - /home/rakitha/apps/radarr/data:/config
-      - /home/rakitha/sambashare/Movies:/movies
-      - /home/rakitha/apps/qbittorrent/downloads:/downloads
+      - ./data/radarr/config:/config
+      - ./media/movies:/movies
+      - ./data/qbittorrent/downloads:/downloads
     ports:
       - "${RADARR_PORT}:7878"
     restart: unless-stopped
@@ -79,14 +79,14 @@ services:
       - PGID=${SONARR_PGID}
       - TZ=${TZ}
     volumes:
-      - /home/rakitha/apps/prowlarr/data:/config
+      - ./data/prowlarr/config:/config
     ports:
       - "${PROWLARR_PORT}:9696"
     restart: unless-stopped
   uptimekuma:
     image: louislam/uptime-kuma:latest
     volumes: 
-      - /home/rakitha/apps/uptimekuma:/app/data
+      - ./data/uptimekuma:/app/data
     container_name: uptime-kuma
     ports:
       - "${UPTIMEKUMA_PORT}:3001"
